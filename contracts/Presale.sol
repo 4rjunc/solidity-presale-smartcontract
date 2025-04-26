@@ -26,4 +26,28 @@ contract Presale is ReentrancyGuard, Pausable {
   IERC20 public immutable USDCInterface = IERC20(USDC);
   // IUniswapV2Router02 public immutable router = IUniswapV2Router02(ROUTER);
 
+  /// @dev presale parameters 
+  uint256 public softcap;
+  uint256 public hardcap;
+  uint256 public startTime;
+  uint256 public endTime;
+  uint256 public claimTime;
+  uint256 public presaleSupply;
+
+  /// @dev Total tokens sold in presale 
+  uint256 public tokenTokensSold;
+
+  /// @dev Amount raised in presale 
+  uint256 public fundsRaised;
+
+  /// @dev wallet account for raising funds 
+  uint256 public wallet;
+
+  /// @dev tracks investors 
+  address[] public investors;
+
+  /// @dev Tracks early investors who invested before reaching softcap. Unsold tokens will be distributed pro-rata to early investors
+  address[] public earlyInvestors;
+
+
 }
