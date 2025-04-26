@@ -21,4 +21,9 @@ contract Presale is ReentrancyGuard, Pausable {
   /// @dev owner address 
   address private _owner;
 
+  /// @dev Token interfaces
+  // ECT public immutable token; /// Change the interface to lottery token
+  IERC20 public immutable USDCInterface = IERC20(USDC);
+  // IUniswapV2Router02 public immutable router = IUniswapV2Router02(ROUTER);
+
 }
