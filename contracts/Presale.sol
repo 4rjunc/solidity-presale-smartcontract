@@ -61,4 +61,47 @@ contract Presale is ReentrancyGuard, Pausable {
 
   /// @dev tracks early investors 
   mapping(address => bool) private earlyInvestorsMapping;
+  
+  /**
+  * @dev event for token is bought 
+  * @param buyer buyer who bought them 
+  * @param tokensBought the bought tokens amount
+  * @param amountPaid the amount of payment 
+  */  
+  event TokenBought(
+    address indexed buyer,
+    uint256 indexed tokensBought,
+    uint256 indexed amountPaid,
+    uint256 timestamp
+  );
+  
+  /// @dev event for refunding all funds 
+  event FundsRefunded(
+    address indexed caller,
+    uint256 indexed fundsAmount,
+    uint256 timestamp
+  );
+
+  /// @dev event for claiming tokens
+  event TokensClaimed(address indexed caller, uint256 indexed tokenAmount);
+
+  /// @dev event for updating wallet address for withdrawing contract balance 
+  event WalletUpdate(address indexed oldWallet, address indexed newWallet);
+
+  /// @dev event for setting claim time 
+  event ClaimTimeUpdated(
+    uint256 indexed oldClaimTime,
+    uint256 indexed newOwner
+  );
+
+  /// @dev event for transferring ownership 
+  event OwnershipTransfered(
+    address indexed previousOwner,
+    address indexed newOwner
+  );
+
+
+
+
+
 }
