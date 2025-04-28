@@ -100,8 +100,51 @@ contract Presale is ReentrancyGuard, Pausable {
     address indexed newOwner
   );
 
+  /// @dev validate if address is non-zero
+  modifier notZeroAddress(address address_) {
+      require(address_ != address(0), "Invalid address");
+      _;
+  }
+
+  /// @dev validate presale startTime and endTime is valid 
+  modifier isFuture(uint256 startTime_, uint256 duration_){
+     require(startTime_ >= block.timestamp, "Invalid start time");
+     require(duration_ > 0, "Invalid duration");
+     _;
+  }
+
+  /// @dev validate softcap & hardcap setting
+  modifier capSettingValid(uint256 softcap_, uint256 hardcap_) {
+      require(softcap_ > 0, "Invalid softcap");
+      require(hardcap_ > softcap_, "Invalid hardcap");
+      _;
+  }
 
 
+  /// @dev validate if user can purchase certain amount of tokens at timestamp.
+  modifier checkSaleState(uint256 tokenAmount_) {
+      require(
+          block.timestamp >= startTime && block.timestamp <= endTime,
+          "Invalid time for buying the token."
+      );
 
+      // uint256 _tokensAvailable = tokensAvailable();
+      //
+      // require(
+      //     tokenAmount_ <= _tokensAvailable && tokenAmount_ > 0,
+      //     "Exceeds available tokens"
+      // );
+      _;
+  }
 
+  /// @dev validate if user is owner or not.
+  modifier onlyOwner() {
+      if (msg.sender != _owner) {
+          revert NotOwner(); // Revert with custom error
+      }
+      _;
+  }
+
+  //Define a custom error for not being the owner
+  error NotOwner();
 }
