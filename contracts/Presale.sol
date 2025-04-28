@@ -49,5 +49,16 @@ contract Presale is ReentrancyGuard, Pausable {
   /// @dev Tracks early investors who invested before reaching softcap. Unsold tokens will be distributed pro-rata to early investors
   address[] public earlyInvestors;
 
+  /// @dev thresholds of token amount and prices
+  uint256[] public thresholds;
+  uint256[] public prices;
 
+  /// @dev tracks contribution of each investors 
+  mapping(address => mapping(address => uint256)) public investments;
+  
+  /// @dev tracks token amount of investors 
+  mapping(address => uint256) public investorsTokenBalance;
+
+  /// @dev tracks early investors 
+  mapping(address => bool) private earlyInvestorsMapping;
 }
