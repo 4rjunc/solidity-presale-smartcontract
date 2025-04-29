@@ -10,6 +10,8 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 //import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 
+import "./ECT.sol";
+
 contract Presale is ReentrancyGuard, Pausable {
   using SafeERC20 for IERC20;
 
@@ -22,7 +24,7 @@ contract Presale is ReentrancyGuard, Pausable {
   address private _owner;
 
   /// @dev Token interfaces
-  // ECT public immutable token; /// Change the interface to lottery token
+  ECT public immutable token; /// Change the interface to lottery token
   IERC20 public immutable USDCInterface = IERC20(USDC);
   // IUniswapV2Router02 public immutable router = IUniswapV2Router02(ROUTER);
 
@@ -147,4 +149,44 @@ contract Presale is ReentrancyGuard, Pausable {
 
   //Define a custom error for not being the owner
   error NotOwner();
+
+  /**
+     * @dev constructor for presale
+     * @param softcap_ softcap for Presale, // 500,000
+     * @param hardcap_ hardcap for Presale, // 1,000,000
+     * @param startTime_ Presale start time, // 1662819200000
+     * @param duration_ Presale duration, // 1762819200000
+     * @param tokenAddress_ deployed ECT token address, // 0x810fa...
+     * @param presaleTokenPercent_  ECT Token allocation percent for Presale, // 10%
+     */
+    constructor(
+        uint256 softcap_,
+        uint256 hardcap_,
+        uint256 startTime_,
+        uint256 duration_,
+        address tokenAddress_,
+        uint8 presaleTokenPercent_
+    )
+        capSettingValid(softcap_, hardcap_)
+        notZeroAddress(tokenAddress_)
+        isFuture(startTime_, duration_)
+    {
+        _owner = msg.sender;
+        softcap = softcap_;
+        hardcap = hardcap_;
+        startTime = startTime_;
+        endTime = startTime_ + duration_;
+
+        token = ECT(tokenAddress_);
+        presaleSupply = (token.totalSupply() * presaleTokenPercent_) / 100;
+
+        // Initialize the thresholds and prices
+        thresholds = [
+            3_000_000_000 * 10 ** 18,
+            7_000_000_000 * 10 ** 18,
+            9_000_000_000 * 10 ** 18,
+            presaleSupply
+        ];
+        prices = [80, 100, 120, 140]; // token price has 6 decimals.
+    }
 }
