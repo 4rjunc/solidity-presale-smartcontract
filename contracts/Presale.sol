@@ -70,7 +70,7 @@ contract Presale is ReentrancyGuard, Pausable {
   * @param tokensBought the bought tokens amount
   * @param amountPaid the amount of payment 
   */  
-  event TokenBought(
+  event TokensBought(
     address indexed buyer,
     uint256 indexed tokensBought,
     uint256 indexed amountPaid,
@@ -210,4 +210,50 @@ contract Presale is ReentrancyGuard, Pausable {
      );
      return true;
    }
+
+  /**
+  * @dev internal functions to purchase LOTRY tokens with stable coin like USDT, USDC, DAI 
+  * @param coin_ The stablecoin interface being used 
+  * @param tokenAmount_ LOTRY token amount users willing to buy with 
+  */ 
+ function _buyWithCoin(
+   IERC20 coin_,
+   uint tokenAmount_
+ ) internal checkSaleState(tokenAmount_) whenNotPaused nonReentrant{
+   uint256 _coinAmount = estimatedCoinAmountForTokenAmount(tokenAmount_, coin_);
+   uint8 _coinDecimals = 8; // Only of USDC 
+
+   //Check allowance and balances
+   // coin_.allowance refers to the amount of tokens a "spender" (like a smart contract) is permitted to withdraw from an "owner's" account 
+   require(_coinAmount <= coin_.allowance(msg.sender, address(this)), "Insufficent allowance");
+   require(_coinAmount <= coin_.balanceOf(msg.sender), "Insufficent Balance");
+
+   // Code for buying token or make a data structure to hold details of buyers, the amount they send, how much LOTRY tokens alloted. 
+   // Later when claim function is invoked by buyer after the presale ends. The tokens will be transfered to the buyer 
+
+   // Emit the event of token buying 
+   emit TokensBought(
+     msg.sender,
+     tokenAmount_,
+     _coinAmount,
+     block.timestamp
+   );
+
+   
+
+ }
+
+    /**
+     * @dev Helper function to calculate coin amount for buying a certain amount of tokens. When user inputs tokenAmount and corresponding coinAmount is shown automatically
+     * Takes into consideration price thresholds and returns the total coin amount needed.
+     * @param tokenAmount_ token amount
+     * @param coin_ stable coin type
+     * @return _coinAmount calculated coin amount
+     */
+    function estimatedCoinAmountForTokenAmount(
+        uint256 tokenAmount_,
+        IERC20 coin_
+    ) public view returns (uint256) {
+      // function to calculate how much tokens is allocated to the buyer based on the USDC they paid
+    }
 }
