@@ -189,4 +189,25 @@ contract Presale is ReentrancyGuard, Pausable {
         ];
         prices = [80, 100, 120, 140]; // token price has 6 decimals.
     }
+
+    /**
+      * @dev transfer tokens from token contracts to presale contracts
+      * @param presaleSupplyAmount_ amount of tokens for presale 
+    */
+   function transferTokensToPresale(uint256 presaleSupplyAmount_) public onlyOwner returns (bool) {
+     require(presaleSupplyAmount_ > 0, "Amount must be greater than zero");
+     require(
+       token.balanceOf(msg.sender) >= presaleSupplyAmount_, "Insufficent balance"
+     );
+     require(block.timestamp < startTime, "Presale has already started");
+
+     //Send the tokens to presale contract 
+     SafeERC20.safeTransferFrom(
+       token,
+       msg.sender,
+       address(this),
+       presaleSupplyAmount_
+     );
+     return true;
+   }
 }
